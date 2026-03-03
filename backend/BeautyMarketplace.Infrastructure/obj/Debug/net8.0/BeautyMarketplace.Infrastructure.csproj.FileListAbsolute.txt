@@ -1,0 +1,17 @@
+C:\Users\БеляевИА\Desktop\beauty-marketplace\backend\BeautyMarketplace.Infrastructure\bin\Debug\net8.0\BeautyMarketplace.Infrastructure.deps.json
+C:\Users\БеляевИА\Desktop\beauty-marketplace\backend\BeautyMarketplace.Infrastructure\bin\Debug\net8.0\BeautyMarketplace.Infrastructure.runtimeconfig.json
+C:\Users\БеляевИА\Desktop\beauty-marketplace\backend\BeautyMarketplace.Infrastructure\bin\Debug\net8.0\BeautyMarketplace.Infrastructure.dll
+C:\Users\БеляевИА\Desktop\beauty-marketplace\backend\BeautyMarketplace.Infrastructure\bin\Debug\net8.0\BeautyMarketplace.Infrastructure.pdb
+C:\Users\БеляевИА\Desktop\beauty-marketplace\backend\BeautyMarketplace.Infrastructure\bin\Debug\net8.0\BeautyMarketplace.Core.dll
+C:\Users\БеляевИА\Desktop\beauty-marketplace\backend\BeautyMarketplace.Infrastructure\bin\Debug\net8.0\BeautyMarketplace.Core.pdb
+C:\Users\БеляевИА\Desktop\beauty-marketplace\backend\BeautyMarketplace.Infrastructure\obj\Debug\net8.0\BeautyMarketplace.Infrastructure.csproj.AssemblyReference.cache
+C:\Users\БеляевИА\Desktop\beauty-marketplace\backend\BeautyMarketplace.Infrastructure\obj\Debug\net8.0\BeautyMarketplace.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\БеляевИА\Desktop\beauty-marketplace\backend\BeautyMarketplace.Infrastructure\obj\Debug\net8.0\BeautyMarketplace.Infrastructure.AssemblyInfoInputs.cache
+C:\Users\БеляевИА\Desktop\beauty-marketplace\backend\BeautyMarketplace.Infrastructure\obj\Debug\net8.0\BeautyMarketplace.Infrastructure.AssemblyInfo.cs
+C:\Users\БеляевИА\Desktop\beauty-marketplace\backend\BeautyMarketplace.Infrastructure\obj\Debug\net8.0\BeautyMarketplace.Infrastructure.csproj.CoreCompileInputs.cache
+C:\Users\БеляевИА\Desktop\beauty-marketplace\backend\BeautyMarketplace.Infrastructure\obj\Debug\net8.0\BeautyMa.B84D93DE.Up2Date
+C:\Users\БеляевИА\Desktop\beauty-marketplace\backend\BeautyMarketplace.Infrastructure\obj\Debug\net8.0\BeautyMarketplace.Infrastructure.dll
+C:\Users\БеляевИА\Desktop\beauty-marketplace\backend\BeautyMarketplace.Infrastructure\obj\Debug\net8.0\refint\BeautyMarketplace.Infrastructure.dll
+C:\Users\БеляевИА\Desktop\beauty-marketplace\backend\BeautyMarketplace.Infrastructure\obj\Debug\net8.0\BeautyMarketplace.Infrastructure.pdb
+C:\Users\БеляевИА\Desktop\beauty-marketplace\backend\BeautyMarketplace.Infrastructure\obj\Debug\net8.0\BeautyMarketplace.Infrastructure.genruntimeconfig.cache
+C:\Users\БеляевИА\Desktop\beauty-marketplace\backend\BeautyMarketplace.Infrastructure\obj\Debug\net8.0\ref\BeautyMarketplace.Infrastructure.dll

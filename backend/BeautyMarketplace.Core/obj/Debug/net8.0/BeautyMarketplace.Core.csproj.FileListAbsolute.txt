@@ -1,0 +1,11 @@
+C:\Users\БеляевИА\Desktop\beauty-marketplace\backend\BeautyMarketplace.Core\bin\Debug\net8.0\BeautyMarketplace.Core.deps.json
+C:\Users\БеляевИА\Desktop\beauty-marketplace\backend\BeautyMarketplace.Core\bin\Debug\net8.0\BeautyMarketplace.Core.dll
+C:\Users\БеляевИА\Desktop\beauty-marketplace\backend\BeautyMarketplace.Core\bin\Debug\net8.0\BeautyMarketplace.Core.pdb
+C:\Users\БеляевИА\Desktop\beauty-marketplace\backend\BeautyMarketplace.Core\obj\Debug\net8.0\BeautyMarketplace.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\БеляевИА\Desktop\beauty-marketplace\backend\BeautyMarketplace.Core\obj\Debug\net8.0\BeautyMarketplace.Core.AssemblyInfoInputs.cache
+C:\Users\БеляевИА\Desktop\beauty-marketplace\backend\BeautyMarketplace.Core\obj\Debug\net8.0\BeautyMarketplace.Core.AssemblyInfo.cs
+C:\Users\БеляевИА\Desktop\beauty-marketplace\backend\BeautyMarketplace.Core\obj\Debug\net8.0\BeautyMarketplace.Core.csproj.CoreCompileInputs.cache
+C:\Users\БеляевИА\Desktop\beauty-marketplace\backend\BeautyMarketplace.Core\obj\Debug\net8.0\BeautyMarketplace.Core.dll
+C:\Users\БеляевИА\Desktop\beauty-marketplace\backend\BeautyMarketplace.Core\obj\Debug\net8.0\refint\BeautyMarketplace.Core.dll
+C:\Users\БеляевИА\Desktop\beauty-marketplace\backend\BeautyMarketplace.Core\obj\Debug\net8.0\BeautyMarketplace.Core.pdb
+C:\Users\БеляевИА\Desktop\beauty-marketplace\backend\BeautyMarketplace.Core\obj\Debug\net8.0\ref\BeautyMarketplace.Core.dll
