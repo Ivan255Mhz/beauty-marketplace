@@ -150,7 +150,8 @@ public record ReviewDto(
     string? ClientAvatarUrl,
     int Rating,
     string? Comment,
-    DateTime CreatedAt
+    DateTime CreatedAt,
+    List<string>? PhotoUrls = null
 );
 
 // ─── Portfolio ───────────────────────────────────────

@@ -79,7 +79,17 @@ export const bookingsApi = {
 
 export const reviewsApi = {
   getByMaster: (masterId: string) => api.get<ReviewDto[]>(`/api/reviews/master/${masterId}`).then(r => r.data),
-  create: (data: CreateReviewRequest) => api.post<ReviewDto>('/api/reviews', data).then(r => r.data),
+  create: (data: CreateReviewRequest, photos?: File[]) => {
+    const form = new FormData();
+    form.append('masterId', data.masterId);
+    form.append('rating', String(data.rating));
+    if (data.comment) form.append('comment', data.comment);
+    if (data.bookingId) form.append('bookingId', data.bookingId);
+    if (photos) photos.forEach(f => form.append('photos', f));
+    return api.post<ReviewDto>('/api/reviews', form, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }).then(r => r.data);
+  },
 };
 
 // ─── Schedule ─────────────────────────────────────────

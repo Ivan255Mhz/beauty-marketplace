@@ -4,6 +4,7 @@ public interface IFileService
 {
     Task<string?> SaveAvatarAsync(IFormFile file, Guid userId);
     Task<string?> SavePortfolioPhotoAsync(IFormFile file, Guid masterId);
+    Task<string?> SaveReviewPhotoAsync(IFormFile file, Guid reviewId);
     void DeleteFile(string? url);
 }
 
@@ -19,6 +20,9 @@ public class FileService : IFileService
 
     public Task<string?> SavePortfolioPhotoAsync(IFormFile file, Guid masterId) =>
         SaveImageAsync(file, "portfolio", masterId.ToString());
+
+    public Task<string?> SaveReviewPhotoAsync(IFormFile file, Guid reviewId) =>
+        SaveImageAsync(file, "reviews", reviewId.ToString());
 
     private async Task<string?> SaveImageAsync(IFormFile file, string folder, string prefix)
     {

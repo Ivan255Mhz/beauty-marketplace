@@ -144,9 +144,7 @@ using (var scope = app.Services.CreateScope())
         cmd.CommandText = @"
             ALTER TABLE ""Bookings"" ADD COLUMN IF NOT EXISTS ""Reminder24hSent"" boolean NOT NULL DEFAULT false;
             ALTER TABLE ""Bookings"" ADD COLUMN IF NOT EXISTS ""Reminder2hSent""  boolean NOT NULL DEFAULT false;
-
-            -- Completed and NoShow statuses are stored as strings — no schema change needed.
-            -- BookingCompleted, BookingNoShow, Reminder24h, Reminder2h notification types are also strings.
+            ALTER TABLE ""Reviews""  ADD COLUMN IF NOT EXISTS ""PhotoUrls"" text[] NOT NULL DEFAULT ARRAY[]::text[];
         ";
         await cmd.ExecuteNonQueryAsync();
         logger.LogInformation("Schema update completed successfully.");

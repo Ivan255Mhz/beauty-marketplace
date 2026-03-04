@@ -52,6 +52,7 @@ public interface IReviewRepository
     Task<List<Review>> GetByMasterIdAsync(Guid masterId);
     Task<bool> ExistsAsync(Guid clientId, Guid masterId, Guid? bookingId);
     Task AddAsync(Review review);
+    Task UpdateAsync(Review review);
 }
 
 public interface IPortfolioRepository
