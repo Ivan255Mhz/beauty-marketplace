@@ -7,6 +7,7 @@ import {
   EyeOutlined, HeartOutlined, ThunderboltOutlined,
 } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
+import { useIsMobile } from '../hooks/useIsMobile';
 import { mastersApi } from '../api/endpoints';
 import type { MasterListItemDto } from '../types';
 
@@ -57,6 +58,7 @@ const STATS = [
 
 export default function HomePage() {
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
   const [popularMasters, setPopularMasters] = useState<MasterListItemDto[]>([]);
   const [mastersLoading, setMastersLoading] = useState(true);
 
@@ -73,7 +75,7 @@ export default function HomePage() {
       {/*  Hero  */}
       <div style={{
         background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)',
-        padding: '90px 24px 80px',
+        padding: isMobile ? '48px 20px 40px' : '90px 24px 80px',
         position: 'relative',
         overflow: 'hidden',
       }}>
@@ -121,7 +123,7 @@ export default function HomePage() {
             Маникюр, стрижки, макияж, брови — выбери мастера и запишись онлайн за 2 минуты
           </Paragraph>
 
-          <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap', flexDirection: isMobile ? 'column' : 'row', alignItems: 'center' }}>
             <Button
               size="large" type="primary"
               icon={<SearchOutlined />}
@@ -165,7 +167,7 @@ export default function HomePage() {
       </div>
 
       {/*  Categories  */}
-      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '72px 24px 0' }}>
+      <div style={{ maxWidth: 1200, margin: '0 auto', padding: isMobile ? '40px 16px 0' : '72px 24px 0' }}>
         <div style={{ textAlign: 'center', marginBottom: 40 }}>
           <Title level={2} style={{ marginBottom: 8 }}>Популярные категории</Title>
           <Text type="secondary" style={{ fontSize: 16 }}>Выберите нужную услугу и найдите лучшего мастера</Text>
@@ -208,7 +210,7 @@ export default function HomePage() {
       </div>
 
       {/*  How it works  */}
-      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '72px 24px 0' }}>
+      <div style={{ maxWidth: 1200, margin: '0 auto', padding: isMobile ? '40px 16px 0' : '72px 24px 0' }}>
         <div style={{ textAlign: 'center', marginBottom: 48 }}>
           <Title level={2} style={{ marginBottom: 8 }}>Как это работает</Title>
           <Text type="secondary" style={{ fontSize: 16 }}>Три простых шага до идеального образа</Text>
@@ -251,7 +253,7 @@ export default function HomePage() {
       </div>
 
       {/*  Popular Masters  */}
-      <div style={{ maxWidth: 1200, margin: '0 auto', padding: '72px 24px 0' }}>
+      <div style={{ maxWidth: 1200, margin: '0 auto', padding: isMobile ? '40px 16px 0' : '72px 24px 0' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 32, flexWrap: 'wrap', gap: 12 }}>
           <div>
             <Title level={2} style={{ marginBottom: 4 }}>Мастера на платформе</Title>

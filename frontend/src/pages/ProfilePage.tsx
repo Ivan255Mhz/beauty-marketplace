@@ -4,11 +4,13 @@ import { UserOutlined, UploadOutlined } from '@ant-design/icons';
 import { usersApi } from '../api/endpoints';
 import { useAuthStore } from '../context/authStore';
 import type { UserDto } from '../types';
+import { useIsMobile } from '../hooks/useIsMobile';
 
 const { Title, Text } = Typography;
 const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 export default function ProfilePage() {
+  const isMobile = useIsMobile();
   const [user, setUser] = useState<UserDto | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);

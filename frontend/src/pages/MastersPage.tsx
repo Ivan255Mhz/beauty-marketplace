@@ -9,6 +9,7 @@ import {
   SearchOutlined, CloseOutlined, StarFilled,
 } from '@ant-design/icons';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useIsMobile } from '../hooks/useIsMobile';
 import { mastersApi } from '../api/endpoints';
 import type { MasterListItemDto } from '../types';
 
@@ -53,6 +54,7 @@ function activeFilterCount(f: Filters) {
 }
 
 export default function MastersPage() {
+  const isMobile = useIsMobile();
   const [masters, setMasters] = useState<MasterListItemDto[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);

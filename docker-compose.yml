@@ -34,9 +34,9 @@ services:
       - Smtp__Host=smtp.yandex.ru
       - Smtp__Port=465
       - Smtp__Ssl=true
-      - Smtp__User=ivansamiko1996@yandex.ru
-      - Smtp__Password=ueseozcodypzimpt
-      - Smtp__From=ivansamiko1996@yandex.ru
+      - Smtp__User=ВАША_ПОЧТА@yandex.ru
+      - Smtp__Password=ВАШ_ПАРОЛЬ_ПРИЛОЖЕНИЯ
+      - Smtp__From=ВАША_ПОЧТА@yandex.ru
       - Smtp__FromName=BeautyBook
     depends_on:
       db:

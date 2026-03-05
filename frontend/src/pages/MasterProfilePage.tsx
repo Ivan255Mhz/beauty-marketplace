@@ -9,6 +9,7 @@ import {
   PictureOutlined, MessageOutlined, UploadOutlined, DeleteOutlined,
 } from '@ant-design/icons';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useIsMobile } from '../hooks/useIsMobile';
 import { mastersApi, bookingsApi, reviewsApi } from '../api/endpoints';
 import { useAuthStore } from '../context/authStore';
 import type { MasterProfileDto, ServiceDto, BookingDto } from '../types';
@@ -26,6 +27,7 @@ const CATEGORY_LABELS: Record<string, string> = {
 };
 
 export default function MasterProfilePage() {
+  const isMobile = useIsMobile();
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { isAuthenticated, role } = useAuthStore();

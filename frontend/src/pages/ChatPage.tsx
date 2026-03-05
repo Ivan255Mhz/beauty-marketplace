@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useIsMobile } from '../hooks/useIsMobile';
 import { Avatar, Typography, Input, Button, Spin, Badge, Modal, List } from 'antd';
 import {
   SendOutlined, UserOutlined, ArrowLeftOutlined,
@@ -85,6 +86,7 @@ export default function ChatPage() {
   const typingTimer  = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pidRef       = useRef<string | undefined>(partnerId);
   useEffect(() => { pidRef.current = partnerId; }, [partnerId]);
+  const isMobile = useIsMobile();
 
   useEffect(() => { if (!isAuthenticated) navigate('/login'); }, [isAuthenticated]);
 
@@ -279,10 +281,10 @@ export default function ChatPage() {
 
   // ── Render ────────────────────────────────────────────────────────────────
   return (
-    <div style={{ height: 'calc(100vh - 64px)', display: 'flex', background: '#f5f5f5' }}>
+    <div style={{ height: isMobile ? 'calc(100vh - 52px - 56px)' : 'calc(100vh - 64px)', display: 'flex', background: '#f5f5f5' }}>
 
       {/* Left panel */}
-      <div style={{ width: 320, flexShrink: 0, background: '#fff', borderRight: '1px solid #f0f0f0', display: 'flex', flexDirection: 'column' }}>
+      <div style={{ width: isMobile ? '100%' : 320, flexShrink: 0, background: '#fff', borderRight: '1px solid #f0f0f0', display: isMobile && partnerId ? 'none' : 'flex', flexDirection: 'column' }}>
         <div style={{ padding: '14px 16px', borderBottom: '1px solid #f0f0f0', display: 'flex', alignItems: 'center', gap: 10 }}>
           <MessageOutlined style={{ color: '#ff6b9d', fontSize: 18 }} />
           <Text strong style={{ fontSize: 15, flex: 1 }}>Сообщения</Text>
@@ -356,7 +358,7 @@ export default function ChatPage() {
       </div>
 
       {/* Right panel */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
+      <div style={{ flex: 1, display: isMobile && !partnerId ? 'none' : 'flex', flexDirection: 'column', minWidth: 0, width: isMobile ? '100%' : undefined }}>
         {!partnerId ? (
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
             <MessageOutlined style={{ fontSize: 64, color: '#e0e0e0', marginBottom: 16 }} />

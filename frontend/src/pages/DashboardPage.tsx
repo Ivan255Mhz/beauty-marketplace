@@ -16,6 +16,7 @@ import { useAuthStore } from '../context/authStore';
 import { bookingsApi, servicesApi, mastersApi, scheduleApi, reviewsApi } from '../api/endpoints';
 import type { BookingDto, ServiceDto, MasterProfileDto, WorkScheduleItem, PortfolioPhotoDto } from '../types';
 import { useNavigate } from 'react-router-dom';
+import { useIsMobile } from '../hooks/useIsMobile';
 import dayjs from 'dayjs';
 import RatingPicker from '../components/RatingPicker';
 
@@ -1553,6 +1554,7 @@ function ClientDashboard() {
 
 //  Main 
 export default function DashboardPage() {
+  const isMobile = useIsMobile();
   const { role, name, isAuthenticated } = useAuthStore();
   const navigate = useNavigate();
 
