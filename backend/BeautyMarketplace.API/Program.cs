@@ -31,6 +31,13 @@ builder.Services.AddScoped<IFileService, FileService>();
 // Фоновый сервис напоминаний
 builder.Services.AddHostedService<ReminderHostedService>();
 
+// Email service
+builder.Services.AddScoped<IEmailService, EmailService>();
+
+// SignalR real-time chat
+builder.Services.AddSingleton<BeautyMarketplace.API.Hubs.PresenceTracker>();
+builder.Services.AddSignalR();
+
 var jwtKey = builder.Configuration["Jwt:Key"]!;
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -45,6 +52,19 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidAudience = builder.Configuration["Jwt:Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
         };
+
+        // SignalR sends JWT as query param because WebSocket cannot set headers
+        options.Events = new Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var token = context.Request.Query["access_token"];
+                var path  = context.HttpContext.Request.Path;
+                if (!string.IsNullOrEmpty(token) && path.StartsWithSegments("/hubs"))
+                    context.Token = token;
+                return System.Threading.Tasks.Task.CompletedTask;
+            }
+        };
     });
 
 builder.Services.AddAuthorization();
@@ -52,9 +72,14 @@ builder.Services.AddAuthorization();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
-        policy.WithOrigins("http://localhost:5173", "http://localhost:3000", "http://localhost:80")
+        policy.WithOrigins(
+            "http://localhost",
+            "http://localhost:80",
+            "http://localhost:3000",
+            "http://localhost:5173")
               .AllowAnyHeader()
-              .AllowAnyMethod());
+              .AllowAnyMethod()
+              .AllowCredentials());
 });
 
 builder.Services.AddControllers()
@@ -100,6 +125,7 @@ app.UseCors("AllowFrontend");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+app.MapHub<BeautyMarketplace.API.Hubs.ChatHub>("/hubs/chat");
 
 // Auto-create all tables on startup, then apply any missing column additions
 using (var scope = app.Services.CreateScope())
@@ -121,9 +147,15 @@ using (var scope = app.Services.CreateScope())
         cmd.CommandText = @"
             ALTER TABLE ""Bookings"" ADD COLUMN IF NOT EXISTS ""Reminder24hSent"" boolean NOT NULL DEFAULT false;
             ALTER TABLE ""Bookings"" ADD COLUMN IF NOT EXISTS ""Reminder2hSent""  boolean NOT NULL DEFAULT false;
+            ALTER TABLE ""Reviews""  ADD COLUMN IF NOT EXISTS ""PhotoUrls"" text[] NOT NULL DEFAULT ARRAY[]::text[];
 
-            -- Completed and NoShow statuses are stored as strings — no schema change needed.
-            -- BookingCompleted, BookingNoShow, Reminder24h, Reminder2h notification types are also strings.
+            -- Email confirmation (added in v4)
+            ALTER TABLE ""Users"" ADD COLUMN IF NOT EXISTS ""EmailConfirmed""          boolean   NOT NULL DEFAULT false;
+            ALTER TABLE ""Users"" ADD COLUMN IF NOT EXISTS ""EmailConfirmationToken""   text               DEFAULT NULL;
+            ALTER TABLE ""Users"" ADD COLUMN IF NOT EXISTS ""EmailConfirmationExpiry""  timestamp          DEFAULT NULL;
+
+            -- Mark all EXISTING users as confirmed so they are not locked out after upgrade
+            UPDATE ""Users"" SET ""EmailConfirmed"" = true WHERE ""EmailConfirmed"" = false;
         ";
         await cmd.ExecuteNonQueryAsync();
         logger.LogInformation("Schema update completed successfully.");

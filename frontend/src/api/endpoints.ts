@@ -15,8 +15,10 @@ import type {
 } from '../types';
 
 export const authApi = {
-  login: (data: LoginRequest) => api.post<AuthResponse>('/api/auth/login', data).then(r => r.data),
-  register: (data: RegisterRequest) => api.post<AuthResponse>('/api/auth/register', data).then(r => r.data),
+  login:              (data: LoginRequest)     => api.post<AuthResponse>('/api/auth/login', data).then(r => r.data),
+  register:           (data: RegisterRequest)  => api.post<{ message: string }>('/api/auth/register', data).then(r => r.data),
+  confirmEmail:       (token: string)          => api.get<{ message: string }>(`/api/auth/confirm-email?token=${token}`).then(r => r.data),
+  resendConfirmation: (email: string)          => api.post<{ message: string }>('/api/auth/resend-confirmation', { email }).then(r => r.data),
 };
 
 export const usersApi = {
@@ -79,7 +81,17 @@ export const bookingsApi = {
 
 export const reviewsApi = {
   getByMaster: (masterId: string) => api.get<ReviewDto[]>(`/api/reviews/master/${masterId}`).then(r => r.data),
-  create: (data: CreateReviewRequest) => api.post<ReviewDto>('/api/reviews', data).then(r => r.data),
+  create: (data: CreateReviewRequest, photos?: File[]) => {
+    const form = new FormData();
+    form.append('masterId', data.masterId);
+    form.append('rating', String(data.rating));
+    if (data.comment) form.append('comment', data.comment);
+    if (data.bookingId) form.append('bookingId', data.bookingId);
+    if (photos) photos.forEach(f => form.append('photos', f));
+    return api.post<ReviewDto>('/api/reviews', form, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }).then(r => r.data);
+  },
 };
 
 // ─── Schedule ─────────────────────────────────────────

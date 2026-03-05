@@ -19,6 +19,7 @@ export interface ReviewDto {
   rating: number;
   comment?: string;
   createdAt: string;
+  photoUrls?: string[];
 }
 
 export interface NotificationDto {

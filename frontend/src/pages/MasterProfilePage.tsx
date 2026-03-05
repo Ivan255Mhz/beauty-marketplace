@@ -6,7 +6,7 @@ import {
 import {
   UserOutlined, EnvironmentOutlined, ClockCircleOutlined,
   DollarOutlined, CalendarOutlined, StarOutlined, StarFilled,
-  PictureOutlined, MessageOutlined,
+  PictureOutlined, MessageOutlined, UploadOutlined, DeleteOutlined,
 } from '@ant-design/icons';
 import { useParams, useNavigate } from 'react-router-dom';
 import { mastersApi, bookingsApi, reviewsApi } from '../api/endpoints';
@@ -40,6 +40,8 @@ export default function MasterProfilePage() {
   const [reviewBookingId, setReviewBookingId] = useState<string | null>(null);
   const [bookingForm] = Form.useForm();
   const [reviewForm] = Form.useForm();
+  const [reviewPhotos, setReviewPhotos] = useState<File[]>([]);
+  const [reviewPhotoUrls, setReviewPhotoUrls] = useState<string[]>([]);
 
   useEffect(() => {
     if (!id) return;
@@ -94,7 +96,7 @@ export default function MasterProfilePage() {
         rating: values.rating,
         comment: values.comment,
         bookingId: reviewBookingId,
-      });
+      }, reviewPhotos);
       setMaster(prev => prev ? {
         ...prev,
         reviews: [review, ...prev.reviews],
@@ -106,6 +108,8 @@ export default function MasterProfilePage() {
       message.success('Отзыв оставлен, спасибо!');
       setReviewModal(false);
       setReviewBookingId(null);
+      setReviewPhotos([]);
+      setReviewPhotoUrls([]);
       reviewForm.resetFields();
     } catch (e: any) {
       message.error(e.response?.data?.message || 'Ошибка');
@@ -304,7 +308,22 @@ export default function MasterProfilePage() {
                         </Text>
                       </div>
                       <Rate disabled value={review.rating} style={{ fontSize: 13 }} />
-                      {review.comment && <Paragraph style={{ marginTop: 4, marginBottom: 0, color: '#555' }}>{review.comment}</Paragraph>}
+                      {review.comment && <Paragraph style={{ marginTop: 4, marginBottom: 4, color: '#555' }}>{review.comment}</Paragraph>}
+                      {review.photoUrls && review.photoUrls.length > 0 && (
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginTop: 8 }}>
+                          <Image.PreviewGroup>
+                            {review.photoUrls.map((url, idx) => (
+                              <Image
+                                key={idx}
+                                src={`${API_BASE}${url}`}
+                                width={72} height={72}
+                                style={{ objectFit: 'cover', borderRadius: 8, cursor: 'pointer' }}
+                                preview={{ src: `${API_BASE}${url}` }}
+                              />
+                            ))}
+                          </Image.PreviewGroup>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </Card>
@@ -373,7 +392,7 @@ export default function MasterProfilePage() {
       <Modal
         title={null}
         open={reviewModal}
-        onCancel={() => { setReviewModal(false); setReviewBookingId(null); reviewForm.resetFields(); }}
+        onCancel={() => { setReviewModal(false); setReviewBookingId(null); setReviewPhotos([]); setReviewPhotoUrls([]); reviewForm.resetFields(); }}
         footer={null}
         width={440}
         styles={{ content: { borderRadius: 16, padding: 0, overflow: 'hidden' } }}
@@ -434,6 +453,64 @@ export default function MasterProfilePage() {
                 maxLength={500}
                 showCount
               />
+            </Form.Item>
+            {/* Photo upload */}
+            <Form.Item label={<Text strong>Фото (до 5 штук)</Text>}>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 8 }}>
+                {reviewPhotoUrls.map((url, i) => (
+                  <div key={i} style={{ position: 'relative', width: 72, height: 72 }}>
+                    <img src={url} alt="" style={{
+                      width: 72, height: 72, objectFit: 'cover',
+                      borderRadius: 8, border: '1px solid #f0f0f0'
+                    }} />
+                    <div
+                      onClick={() => {
+                        const newPhotos = reviewPhotos.filter((_, j) => j !== i);
+                        const newUrls   = reviewPhotoUrls.filter((_, j) => j !== i);
+                        setReviewPhotos(newPhotos);
+                        setReviewPhotoUrls(newUrls);
+                      }}
+                      style={{
+                        position: 'absolute', top: -6, right: -6,
+                        width: 20, height: 20, borderRadius: '50%',
+                        background: '#ff4d4f', cursor: 'pointer',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      }}
+                    >
+                      <DeleteOutlined style={{ fontSize: 10, color: '#fff' }} />
+                    </div>
+                  </div>
+                ))}
+                {reviewPhotos.length < 5 && (
+                  <label style={{
+                    width: 72, height: 72, borderRadius: 8, cursor: 'pointer',
+                    border: '2px dashed #ffc0d6', display: 'flex',
+                    flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+                    background: '#fff7fb', color: '#ff6b9d',
+                  }}>
+                    <UploadOutlined style={{ fontSize: 18 }} />
+                    <span style={{ fontSize: 10, marginTop: 2 }}>Добавить</span>
+                    <input
+                      type="file" accept="image/jpeg,image/png,image/webp"
+                      multiple style={{ display: 'none' }}
+                      onChange={e => {
+                        const files = Array.from(e.target.files || []);
+                        const remaining = 5 - reviewPhotos.length;
+                        const toAdd = files.slice(0, remaining);
+                        setReviewPhotos(prev => [...prev, ...toAdd]);
+                        setReviewPhotoUrls(prev => [
+                          ...prev,
+                          ...toAdd.map(f => URL.createObjectURL(f)),
+                        ]);
+                        e.target.value = '';
+                      }}
+                    />
+                  </label>
+                )}
+              </div>
+              <Text type="secondary" style={{ fontSize: 11 }}>
+                JPG, PNG, WebP — максимум 5 фото
+              </Text>
             </Form.Item>
             <Button
               type="primary" htmlType="submit" loading={reviewLoading} block size="large"

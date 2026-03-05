@@ -1,4 +1,5 @@
-**/obj/
-**/bin/
-**/.vs/
-**/*.user
+**/bin
+**/obj
+**/.vs
+**/.git
+*.user

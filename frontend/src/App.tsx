@@ -5,7 +5,7 @@ import AppLayout from './components/layout/AppLayout';
 import HomePage from './pages/HomePage';
 import MastersPage from './pages/MastersPage';
 import MasterProfilePage from './pages/MasterProfilePage';
-import { LoginPage, RegisterPage } from './pages/AuthPages';
+import { LoginPage, RegisterPage, ConfirmEmailPage } from './pages/AuthPages';
 import DashboardPage from './pages/DashboardPage';
 import ProfilePage from './pages/ProfilePage';
 import ChatPage from './pages/ChatPage';
@@ -30,6 +30,7 @@ export default function App() {
             <Route path="/masters/:id" element={<MasterProfilePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/confirm-email" element={<ConfirmEmailPage />} />
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/chat" element={<ChatPage />} />

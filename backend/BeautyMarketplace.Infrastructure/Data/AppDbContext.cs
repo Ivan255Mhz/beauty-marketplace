@@ -21,6 +21,12 @@ public class AppDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
+        modelBuilder.Entity<Review>(e =>
+        {
+            // Npgsql maps List<string> to text[] natively
+            e.Property(r => r.PhotoUrls).HasColumnType("text[]");
+        });
+
         modelBuilder.Entity<User>(e =>
         {
             e.HasKey(u => u.Id);

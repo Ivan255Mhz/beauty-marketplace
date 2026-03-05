@@ -12,6 +12,7 @@ public record RegisterRequest(
 );
 
 public record LoginRequest(string Email, string Password);
+public record ResendConfirmationRequest(string Email);
 
 public record AuthResponse(
     string Token,
@@ -150,7 +151,8 @@ public record ReviewDto(
     string? ClientAvatarUrl,
     int Rating,
     string? Comment,
-    DateTime CreatedAt
+    DateTime CreatedAt,
+    List<string>? PhotoUrls = null
 );
 
 // ─── Portfolio ───────────────────────────────────────

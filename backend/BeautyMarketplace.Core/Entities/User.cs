@@ -13,6 +13,11 @@ public class User
     public string? AvatarUrl { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
+    // Email confirmation
+    public bool EmailConfirmed { get; set; } = false;
+    public string? EmailConfirmationToken { get; set; }
+    public DateTime? EmailConfirmationExpiry { get; set; }
+
     public MasterProfile? MasterProfile { get; set; }
     public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
     public ICollection<Notification> Notifications { get; set; } = new List<Notification>();

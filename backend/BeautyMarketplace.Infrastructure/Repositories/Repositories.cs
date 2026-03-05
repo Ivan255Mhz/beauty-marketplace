@@ -16,6 +16,9 @@ public class UserRepository : IUserRepository
     public Task<User?> GetByEmailAsync(string email) =>
         _db.Users.FirstOrDefaultAsync(u => u.Email == email.ToLower());
 
+    public Task<User?> GetByConfirmationTokenAsync(string token) =>
+        _db.Users.FirstOrDefaultAsync(u => u.EmailConfirmationToken == token);
+
     public Task<List<User>> SearchAsync(string query, Guid excludeUserId) =>
         _db.Users
             .Where(u => u.Id != excludeUserId &&
@@ -208,6 +211,12 @@ public class ReviewRepository : IReviewRepository
     public async Task AddAsync(Review review)
     {
         await _db.Reviews.AddAsync(review);
+        await _db.SaveChangesAsync();
+    }
+
+    public async Task UpdateAsync(Review review)
+    {
+        _db.Reviews.Update(review);
         await _db.SaveChangesAsync();
     }
 }

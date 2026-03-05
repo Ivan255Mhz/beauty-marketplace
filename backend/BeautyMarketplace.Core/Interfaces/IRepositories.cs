@@ -6,6 +6,7 @@ public interface IUserRepository
 {
     Task<User?> GetByIdAsync(Guid id);
     Task<User?> GetByEmailAsync(string email);
+    Task<User?> GetByConfirmationTokenAsync(string token);
     Task<List<User>> SearchAsync(string query, Guid excludeUserId);
     Task AddAsync(User user);
     Task UpdateAsync(User user);
@@ -52,6 +53,7 @@ public interface IReviewRepository
     Task<List<Review>> GetByMasterIdAsync(Guid masterId);
     Task<bool> ExistsAsync(Guid clientId, Guid masterId, Guid? bookingId);
     Task AddAsync(Review review);
+    Task UpdateAsync(Review review);
 }
 
 public interface IPortfolioRepository

@@ -202,7 +202,7 @@ public class MastersController : ControllerBase
                 new PortfolioPhotoDto(p.Id, p.Url, p.Caption)).ToList(),
             Reviews: m.Reviews.OrderByDescending(r => r.CreatedAt).Select(r =>
                 new ReviewDto(r.Id, r.ClientId, r.Client.Name, r.Client.AvatarUrl,
-                    r.Rating, r.Comment, r.CreatedAt)).ToList()
+                    r.Rating, r.Comment, r.CreatedAt, r.PhotoUrls)).ToList()
         );
     }
 }

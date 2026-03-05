@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   db:
     image: postgres:16-alpine
@@ -29,6 +27,17 @@ services:
       - Jwt__Issuer=BeautyMarketplace
       - Jwt__Audience=BeautyMarketplaceUsers
       - ASPNETCORE_ENVIRONMENT=Development
+      - App__FrontendUrl=http://localhost
+      # ── SMTP Yandex ─────────────────────────────────────────────────────────
+      # Заполните User и Password для реальной отправки писем.
+      # Пока пусто — ссылка подтверждения печатается в лог (DEV режим).
+      - Smtp__Host=smtp.yandex.ru
+      - Smtp__Port=465
+      - Smtp__Ssl=true
+      - Smtp__User=ivansamiko1996@yandex.ru
+      - Smtp__Password=ueseozcodypzimpt
+      - Smtp__From=ivansamiko1996@yandex.ru
+      - Smtp__FromName=BeautyBook
     depends_on:
       db:
         condition: service_healthy
@@ -40,7 +49,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - "5173:80"
+      - "80:80"       # http://localhost — основной адрес
     depends_on:
       - api
 
