@@ -11,11 +11,13 @@ import {
   RiseOutlined, TeamOutlined, ScissorOutlined, SettingOutlined,
   ClockCircleOutlined, PictureOutlined, UploadOutlined, StarOutlined,
   StarFilled, CheckCircleOutlined, StopOutlined,
+  UnorderedListOutlined,
 } from '@ant-design/icons';
 import { useAuthStore } from '../context/authStore';
 import { bookingsApi, servicesApi, mastersApi, scheduleApi, reviewsApi } from '../api/endpoints';
 import type { BookingDto, ServiceDto, MasterProfileDto, WorkScheduleItem, PortfolioPhotoDto } from '../types';
 import { useNavigate } from 'react-router-dom';
+import WeekCalendar from '../components/WeekCalendar';
 import { useIsMobile } from '../hooks/useIsMobile';
 import dayjs from 'dayjs';
 import RatingPicker from '../components/RatingPicker';
@@ -423,6 +425,7 @@ function ServicesTab({
 
 //  Master Dashboard 
 function MasterDashboard() {
+  const isMobile = useIsMobile();
   const [bookings, setBookings] = useState<BookingDto[]>([]);
   const [services, setServices] = useState<ServiceDto[]>([]);
   const [masterProfile, setMasterProfile] = useState<MasterProfileDto | null>(null);
@@ -432,6 +435,7 @@ function MasterDashboard() {
   const [scheduleLoading, setScheduleLoading] = useState(false);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('bookings');
+  const [bookingView, setBookingView] = useState<'list' | 'calendar'>('list');
   const [bookingFilter, setBookingFilter] = useState('all');
   const [serviceModal, setServiceModal] = useState(false);
   const [editingService, setEditingService] = useState<ServiceDto | null>(null);
@@ -604,119 +608,148 @@ function MasterDashboard() {
 
         {/* Bookings */}
         {activeTab === 'bookings' && (
-          <div style={{ padding: 24 }}>
-            <div style={{ marginBottom: 16, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-              {[
-                { key: 'all',       label: `Все (${bookings.length})` },
-                { key: 'Pending',   label: `Ожидают (${pendingCount})` },
-                { key: 'Confirmed', label: `Подтверждено (${confirmedCount})` },
-                { key: 'Completed', label: `Оказано (${completedCount})` },
-                { key: 'Cancelled', label: `Отменено (${bookings.filter(b => b.status === 'Cancelled').length})` },
-                { key: 'NoShow',    label: `Неявка (${bookings.filter(b => b.status === 'NoShow').length})` },
-              ].map(f => (
+          <div style={{ padding: isMobile ? 12 : 24 }}>
+
+            {/* View toggle */}
+            <div style={{ marginBottom: 16, display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center', justifyContent: 'flex-end' }}>
+              <div style={{ display: 'flex', gap: 4, background: '#f5f5f5', borderRadius: 10, padding: 3 }}>
                 <Button
-                  key={f.key} size="small"
-                  type={bookingFilter === f.key ? 'primary' : 'default'}
-                  onClick={() => setBookingFilter(f.key)}
-                  style={{
-                    borderRadius: 20,
-                    ...(bookingFilter === f.key ? { background: '#ff6b9d', borderColor: '#ff6b9d' } : {}),
-                  }}
-                >{f.label}</Button>
-              ))}
+                  type={bookingView === 'list' ? 'primary' : 'text'} size="small"
+                  icon={<UnorderedListOutlined />}
+                  onClick={() => setBookingView('list')}
+                  style={{ borderRadius: 8, ...(bookingView === 'list' ? { background: '#ff6b9d', borderColor: '#ff6b9d' } : {}) }}
+                >Список</Button>
+                <Button
+                  type={bookingView === 'calendar' ? 'primary' : 'text'} size="small"
+                  icon={<CalendarOutlined />}
+                  onClick={() => setBookingView('calendar')}
+                  style={{ borderRadius: 8, ...(bookingView === 'calendar' ? { background: '#ff6b9d', borderColor: '#ff6b9d' } : {}) }}
+                >Календарь</Button>
+              </div>
             </div>
 
-            {filteredBookings.length === 0 ? (
-              <Empty description="Заявок нет" style={{ padding: 40 }} />
-            ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                {filteredBookings.map(b => {
-                  const cfg = STATUS_CONFIG[b.status];
-                  return (
-                    <Card key={b.id} style={{ borderRadius: 12, border: '1px solid #f0f0f0' }} bodyStyle={{ padding: '14px 18px' }}>
-                      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
-                        <div style={{ display: 'flex', gap: 12, flex: 1, minWidth: 200 }}>
-                          <Avatar icon={<UserOutlined />} style={{ background: '#ff6b9d', flexShrink: 0 }} />
-                          <div>
-                            <Text strong>{b.clientName}</Text>
-                            <div style={{ fontSize: 13, color: '#666', marginTop: 2 }}>
-                              {b.serviceName} · <span style={{ color: '#ff6b9d', fontWeight: 600 }}>{b.servicePrice.toLocaleString()} ₽</span>
-                            </div>
-                            <div style={{ fontSize: 13, color: '#888', marginTop: 2 }}>{b.bookingDate}</div>
-                            {b.comment && (
-                              <div style={{ marginTop: 6, padding: '6px 10px', background: '#fafafa', borderRadius: 8, fontSize: 13, color: '#555' }}>
-                                {b.comment}
+            {/* Calendar view */}
+            {bookingView === 'calendar' && (
+              <WeekCalendar bookings={bookings} onStatusChange={handleStatusChange} />
+            )}
+
+            {/* List view */}
+            {bookingView === 'list' && (
+              <>
+                <div style={{ marginBottom: 16, display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                  {[
+                    { key: 'all',       label: `Все (${bookings.length})` },
+                    { key: 'Pending',   label: `Ожидают (${pendingCount})` },
+                    { key: 'Confirmed', label: `Подтверждено (${confirmedCount})` },
+                    { key: 'Completed', label: `Оказано (${completedCount})` },
+                    { key: 'Cancelled', label: `Отменено (${bookings.filter(b => b.status === 'Cancelled').length})` },
+                    { key: 'NoShow',    label: `Неявка (${bookings.filter(b => b.status === 'NoShow').length})` },
+                  ].map(f => (
+                    <Button
+                      key={f.key} size="small"
+                      type={bookingFilter === f.key ? 'primary' : 'default'}
+                      onClick={() => setBookingFilter(f.key)}
+                      style={{
+                        borderRadius: 20,
+                        ...(bookingFilter === f.key ? { background: '#ff6b9d', borderColor: '#ff6b9d' } : {}),
+                      }}
+                    >{f.label}</Button>
+                  ))}
+                </div>
+
+                {filteredBookings.length === 0 ? (
+                  <Empty description="Заявок нет" style={{ padding: 40 }} />
+                ) : (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                    {filteredBookings.map(b => {
+                      const cfg = STATUS_CONFIG[b.status];
+                      return (
+                        <Card key={b.id} style={{ borderRadius: 12, border: '1px solid #f0f0f0' }} bodyStyle={{ padding: '14px 16px' }}>
+                          <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap' }}>
+                            <div style={{ display: 'flex', gap: 12, flex: 1, minWidth: 200 }}>
+                              <Avatar icon={<UserOutlined />} style={{ background: '#ff6b9d', flexShrink: 0 }} />
+                              <div>
+                                <Text strong>{b.clientName}</Text>
+                                <div style={{ fontSize: 13, color: '#666', marginTop: 2 }}>
+                                  {b.serviceName} · <span style={{ color: '#ff6b9d', fontWeight: 600 }}>{b.servicePrice.toLocaleString()} ₽</span>
+                                </div>
+                                <div style={{ fontSize: 13, color: '#888', marginTop: 2 }}>{b.bookingDate}</div>
+                                {b.comment && (
+                                  <div style={{ marginTop: 6, padding: '6px 10px', background: '#fafafa', borderRadius: 8, fontSize: 12, color: '#666' }}>
+                                    {b.comment}
+                                  </div>
+                                )}
                               </div>
-                            )}
+                            </div>
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 8 }}>
+                              <span style={{
+                                padding: '3px 10px', borderRadius: 20, fontSize: 12, fontWeight: 600,
+                                color: cfg.color, background: cfg.bg,
+                              }}>{cfg.label}</span>
+                              {b.status === 'Pending' && (
+                                <Space size={6}>
+                                  <Button
+                                    size="small" type="primary" icon={<CheckOutlined />}
+                                    onClick={() => handleStatusChange(b.id, 'Confirmed')}
+                                    style={{ background: '#52c41a', borderColor: '#52c41a', borderRadius: 8 }}
+                                  >Принять</Button>
+                                  <Button
+                                    size="small" danger icon={<CloseOutlined />}
+                                    onClick={() => handleStatusChange(b.id, 'Cancelled')}
+                                    style={{ borderRadius: 8 }}
+                                  >Отклонить</Button>
+                                </Space>
+                              )}
+                              {b.status === 'Confirmed' && (
+                                <Space size={6} wrap>
+                                  <Popconfirm
+                                    title="Отметить услугу как оказанную?"
+                                    description="Клиент получит уведомление и сможет оставить отзыв."
+                                    okText="Да, оказана"
+                                    cancelText="Нет"
+                                    okButtonProps={{ style: { background: '#1677ff', borderColor: '#1677ff' } }}
+                                    onConfirm={() => handleStatusChange(b.id, 'Completed')}
+                                  >
+                                    <Button
+                                      size="small" icon={<CheckCircleOutlined />}
+                                      style={{ borderRadius: 8, color: '#1677ff', borderColor: '#91caff' }}
+                                    >Услуга оказана</Button>
+                                  </Popconfirm>
+                                  <Popconfirm
+                                    title="Отметить неявку клиента?"
+                                    description="Запись будет помечена как несостоявшаяся."
+                                    okText="Да, неявка"
+                                    cancelText="Нет"
+                                    okButtonProps={{ danger: true }}
+                                    onConfirm={() => handleStatusChange(b.id, 'NoShow')}
+                                  >
+                                    <Button
+                                      size="small" icon={<StopOutlined />}
+                                      style={{ borderRadius: 8, color: '#722ed1', borderColor: '#d3adf7' }}
+                                    >Не состоялась</Button>
+                                  </Popconfirm>
+                                  <Popconfirm
+                                    title="Отменить запись?"
+                                    okText="Да, отменить"
+                                    cancelText="Нет"
+                                    okButtonProps={{ danger: true }}
+                                    onConfirm={() => handleStatusChange(b.id, 'Cancelled')}
+                                  >
+                                    <Button
+                                      size="small" danger icon={<CloseOutlined />}
+                                      style={{ borderRadius: 8 }}
+                                    >Отменить</Button>
+                                  </Popconfirm>
+                                </Space>
+                              )}
+                            </div>
                           </div>
-                        </div>
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 8 }}>
-                          <span style={{
-                            padding: '3px 10px', borderRadius: 20, fontSize: 12, fontWeight: 600,
-                            color: cfg.color, background: cfg.bg,
-                          }}>{cfg.label}</span>
-                          {b.status === 'Pending' && (
-                            <Space size={6}>
-                              <Button
-                                size="small" type="primary" icon={<CheckOutlined />}
-                                onClick={() => handleStatusChange(b.id, 'Confirmed')}
-                                style={{ background: '#52c41a', borderColor: '#52c41a', borderRadius: 8 }}
-                              >Принять</Button>
-                              <Button
-                                size="small" danger icon={<CloseOutlined />}
-                                onClick={() => handleStatusChange(b.id, 'Cancelled')}
-                                style={{ borderRadius: 8 }}
-                              >Отклонить</Button>
-                            </Space>
-                          )}
-                          {b.status === 'Confirmed' && (
-                            <Space size={6} wrap>
-                              <Popconfirm
-                                title="Отметить услугу как оказанную?"
-                                description="Клиент получит уведомление и сможет оставить отзыв."
-                                okText="Да, оказана"
-                                cancelText="Нет"
-                                okButtonProps={{ style: { background: '#1677ff', borderColor: '#1677ff' } }}
-                                onConfirm={() => handleStatusChange(b.id, 'Completed')}
-                              >
-                                <Button
-                                  size="small" icon={<CheckCircleOutlined />}
-                                  style={{ borderRadius: 8, color: '#1677ff', borderColor: '#91caff' }}
-                                >Услуга оказана</Button>
-                              </Popconfirm>
-                              <Popconfirm
-                                title="Отметить неявку клиента?"
-                                description="Запись будет помечена как несостоявшаяся."
-                                okText="Да, неявка"
-                                cancelText="Нет"
-                                okButtonProps={{ danger: true }}
-                                onConfirm={() => handleStatusChange(b.id, 'NoShow')}
-                              >
-                                <Button
-                                  size="small" icon={<StopOutlined />}
-                                  style={{ borderRadius: 8, color: '#722ed1', borderColor: '#d3adf7' }}
-                                >Не состоялась</Button>
-                              </Popconfirm>
-                              <Popconfirm
-                                title="Отменить запись?"
-                                okText="Да, отменить"
-                                cancelText="Нет"
-                                okButtonProps={{ danger: true }}
-                                onConfirm={() => handleStatusChange(b.id, 'Cancelled')}
-                              >
-                                <Button
-                                  size="small" danger icon={<CloseOutlined />}
-                                  style={{ borderRadius: 8 }}
-                                >Отменить</Button>
-                              </Popconfirm>
-                            </Space>
-                          )}
-                        </div>
-                      </div>
-                    </Card>
-                  );
-                })}
-              </div>
+                        </Card>
+                      );
+                    })}
+                  </div>
+                )}
+              </>
             )}
           </div>
         )}
